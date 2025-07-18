@@ -1,0 +1,15 @@
+{
+  "name": "adaptive-card-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive testing suite for Microsoft Teams adaptive cards",
+  "main": "testRunner.ts",
+  "scripts": {
+    "test": "ts-node testRunner.ts",
+    "test:basic": "ts-node basicCardTest.ts",
+    "test:simple": "ts-node simpleTests.ts",
+    "test:jest": "jest --config jest.config.js"
+  },
+  "keywords": ["adaptive-cards", "microsoft-teams", "testing"],
+  "author": "Devin AI",
+  "license": "MIT"
+}

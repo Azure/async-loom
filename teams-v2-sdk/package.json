@@ -1,0 +1,46 @@
+{
+  "name": "agu",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "clean": "npx rimraf ./dist",
+    "build": "npx tsup",
+    "start": "node .",
+    "dev": "npx nodemon -w \"./src/**\" -e ts --exec \"node -r ts-node/register -r dotenv/config ./src/index.ts\"",
+    "test:cards": "ts-node --project tests/cards/tsconfig.json tests/cards/testRunner.ts",
+    "test:cards:basic": "ts-node --project tests/cards/tsconfig.json tests/cards/basicCardTest.ts",
+    "test:cards:simple": "ts-node --project tests/cards/tsconfig.json tests/cards/simpleTests.ts",
+    "test:cards:watch": "nodemon --exec 'npm run test:cards' --watch src/cards --ext ts",
+    "test:jest": "jest --config tests/cards/jest.config.js"
+  },
+  "dependencies": {
+    "@microsoft/teams.api": "preview",
+    "@microsoft/teams.apps": "preview",
+    "@microsoft/teams.cards": "preview",
+    "@microsoft/teams.common": "preview",
+    "@microsoft/teams.dev": "preview",
+    "@microsoft/teams.graph": "preview",
+    "adaptivecards": "^3.0.5",
+    "adaptivecards-templating": "^2.3.1",
+    "axios": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.5.4",
+    "dotenv": "^16.5.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "rimraf": "^6.0.1",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.4.0",
+    "typescript": "^5.4.5"
+  }
+}

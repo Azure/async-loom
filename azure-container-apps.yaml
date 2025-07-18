@@ -1,0 +1,142 @@
+# Azure Container Apps Environment
+apiVersion: app.microsoft.com/v1alpha1
+kind: ContainerApp
+metadata:
+  name: asyncloom-backend
+spec:
+  managedEnvironmentId: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.App/managedEnvironments/{environment-name}
+  configuration:
+    ingress:
+      external: true
+      targetPort: 8000
+      corsPolicy:
+        allowedOrigins: ["*"]
+        allowedMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        allowedHeaders: ["*"]
+    secrets:
+      - name: postgres-connection
+        value: "{postgres-connection-string}"
+      - name: github-token
+        value: "{github-token}"
+  template:
+    containers:
+      - name: backend
+        image: asyncloom-backend:latest
+        resources:
+          cpu: 0.5
+          memory: 1.0Gi
+        env:
+          - name: PORT
+            value: "8000"
+          - name: DATABASE_URL
+            secretRef: postgres-connection
+          - name: GITHUB_TOKEN
+            secretRef: github-token
+        probes:
+          - type: liveness
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+    scale:
+      minReplicas: 1
+      maxReplicas: 10
+      rules:
+        - name: http-scale
+          http:
+            metadata:
+              concurrentRequests: "50"
+
+---
+apiVersion: app.microsoft.com/v1alpha1
+kind: ContainerApp
+metadata:
+  name: asyncloom-frontend
+spec:
+  managedEnvironmentId: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.App/managedEnvironments/{environment-name}
+  configuration:
+    ingress:
+      external: true
+      targetPort: 80
+  template:
+    containers:
+      - name: frontend
+        image: asyncloom-frontend:latest
+        resources:
+          cpu: 0.25
+          memory: 0.5Gi
+        env:
+          - name: BACKEND_URL
+            value: "https://asyncloom-backend.{environment-domain}"
+    scale:
+      minReplicas: 1
+      maxReplicas: 5
+
+---
+apiVersion: app.microsoft.com/v1alpha1
+kind: ContainerApp
+metadata:
+  name: asyncloom-copilot-extension
+spec:
+  managedEnvironmentId: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.App/managedEnvironments/{environment-name}
+  configuration:
+    ingress:
+      external: true
+      targetPort: 3000
+    secrets:
+      - name: openai-api-key
+        value: "{openai-api-key}"
+  template:
+    containers:
+      - name: copilot-extension
+        image: asyncloom-copilot-extension:latest
+        resources:
+          cpu: 0.5
+          memory: 1.0Gi
+        env:
+          - name: PORT
+            value: "3000"
+          - name: OPENAI_API_KEY
+            secretRef: openai-api-key
+          - name: BACKEND_URL
+            value: "https://asyncloom-backend.{environment-domain}"
+    scale:
+      minReplicas: 1
+      maxReplicas: 3
+
+---
+apiVersion: app.microsoft.com/v1alpha1
+kind: ContainerApp
+metadata:
+  name: asyncloom-teams-sdk
+spec:
+  managedEnvironmentId: /subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.App/managedEnvironments/{environment-name}
+  configuration:
+    ingress:
+      external: true
+      targetPort: 3978
+    secrets:
+      - name: teams-app-id
+        value: "{teams-app-id}"
+      - name: teams-app-password
+        value: "{teams-app-password}"
+  template:
+    containers:
+      - name: teams-sdk
+        image: asyncloom-teams-sdk:latest
+        resources:
+          cpu: 0.5
+          memory: 1.0Gi
+        env:
+          - name: PORT
+            value: "3978"
+          - name: TEAMS_APP_ID
+            secretRef: teams-app-id
+          - name: TEAMS_APP_PASSWORD
+            secretRef: teams-app-password
+          - name: BACKEND_URL
+            value: "https://asyncloom-backend.{environment-domain}"
+    scale:
+      minReplicas: 1
+      maxReplicas: 3

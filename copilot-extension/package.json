@@ -1,0 +1,111 @@
+{
+  "name": "agunblock-copilot-extension",
+  "displayName": "AgUnblock GitHub Copilot Extension",
+  "description": "Background agents integration for GitHub Copilot to enhance development workflows",
+  "version": "1.0.0",
+  "publisher": "agunblock",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning"
+  ],
+  "keywords": [
+    "github",
+    "copilot",
+    "ai",
+    "agents",
+    "automation",
+    "development"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "agunblock.startAgent",
+        "title": "Start Background Agent",
+        "category": "AgUnblock"
+      },
+      {
+        "command": "agunblock.configureAgent",
+        "title": "Configure Agent Settings",
+        "category": "AgUnblock"
+      },
+      {
+        "command": "agunblock.viewAgentStatus",
+        "title": "View Agent Status",
+        "category": "AgUnblock"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "agunblock.startAgent",
+          "when": "true"
+        },
+        {
+          "command": "agunblock.configureAgent",
+          "when": "true"
+        },
+        {
+          "command": "agunblock.viewAgentStatus",
+          "when": "true"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AgUnblock",
+      "properties": {
+        "agunblock.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for AgUnblock services"
+        },
+        "agunblock.agentType": {
+          "type": "string",
+          "enum": [
+            "codex",
+            "copilot",
+            "devin",
+            "replit"
+          ],
+          "default": "copilot",
+          "description": "Type of background agent to use"
+        },
+        "agunblock.autoStart": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically start background agent on VS Code startup"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@copilot-extensions/preview-sdk": "^5.0.1",
+    "openai": "^4.24.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4",
+    "tsup": "^8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thegovind/agunblock.git"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020", "DOM"],
+    "types": ["node", "jest"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "declaration": false,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "allowJs": true
+  },
+  "include": [
+    "./**/*",
+    "../../src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "results"
+  ]
+}
